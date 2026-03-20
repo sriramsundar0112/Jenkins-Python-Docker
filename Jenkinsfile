@@ -90,8 +90,8 @@ pipeline{
     }
 
     
-post {
- {
+post
+            {
                 always
                 {
                     emailext attachLog: true, body: '''<html>
