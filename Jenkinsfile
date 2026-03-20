@@ -4,7 +4,9 @@ pipeline{
     environment
     {
        LOCAL_IMAGE_NAME='python-webapp'
-        DOCKER_HUB_REPO='jenkins-docker-python-webapp'
+       DOCKER_HUB_REPO='jenkins-docker-python-webapp'
+       DOCKER_PORT=8000
+       HOST_PORT=8081
      
     }
 
@@ -82,7 +84,11 @@ pipeline{
             {
                 steps
                 {
-                    sh 'docker run -d --name $LOCAL_IMAGE_NAME-V$BUILD_NUMBER -p 8081:8000 $LOCAL_IMAGE_NAME:V$BUILD_NUMBER '
+                    sh '''
+                    docker stop $(docker ps -q --filter "publish=$HOST_PORT")
+                    docker run -d --name $LOCAL_IMAGE_NAME-V$BUILD_NUMBER -p $HOST_PORT:$DOCKER_PORT
+                    $LOCAL_IMAGE_NAME:V$BUILD_NUMBER 
+                    '''
                 }
             }
 
