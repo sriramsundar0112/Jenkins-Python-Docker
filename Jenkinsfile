@@ -85,9 +85,12 @@ pipeline{
                 steps
                 {
                     sh '''
-                    docker stop $(docker ps -q --filter "publish=$HOST_PORT")
+                    CONTAINER_ID=0
+                    $CONTAINER_ID= docker ps -q --filter "publish=$HOST_PORT"
+                    if [ "$CONTAINER_ID" -ne 0];then
+                        docker stop $CONTAINER_ID
+                    fi
                     docker run -d --name $LOCAL_IMAGE_NAME-V$BUILD_NUMBER -p $HOST_PORT:$DOCKER_PORT $LOCAL_IMAGE_NAME:V$BUILD_NUMBER 
-                    
                     '''
                 }
             }
