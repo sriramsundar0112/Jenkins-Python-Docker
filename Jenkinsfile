@@ -11,8 +11,18 @@ pipeline{
     }
 
     stages{
-       
-                stage('SonarQube Code Analysis'){
+       	stage('Validate Agent')
+        {
+            steps
+            {
+               sh 'hostname'
+			   sh 'whoami'
+			   sh 'pwd'
+            }
+        }	
+                
+		
+			stage('SonarQube Code Analysis'){
 		steps{
             withSonarQubeEnv('sonarserver') {
                 sh '''
