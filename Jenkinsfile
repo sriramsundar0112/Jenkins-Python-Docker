@@ -6,7 +6,7 @@ pipeline{
        LOCAL_IMAGE_NAME='python-webapp'
        DOCKER_HUB_REPO='jenkins-docker-python-webapp'
        DOCKER_PORT=8000
-       HOST_PORT=8081
+       HOST_PORT=8082
      
     }
 
