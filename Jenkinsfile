@@ -121,9 +121,9 @@ stage('Deploy and Run Python Web Application') {
                     sudo docker ps -q --filter "publish=${HOST_PORT}"
                     read CONTAINER_ID <<< "\\$(sudo docker ps -q --filter publish=${HOST_PORT})"
                     echo $CONTAINER_ID
-                    if [ -n "$CONTAINER_ID" ]; then
+                    if sudo docker ps -q --filter "publish=${HOST_PORT}" | grep -q .; then; 
                         echo "Stopping container running on port ${HOST_PORT}: $CONTAINER_ID"
-                        sudo docker stop "$CONTAINER_ID"
+                        sudo docker stop $(sudo docker ps -q --filter "publish=${HOST_PORT}")
                     else
                         echo "No existing container found on port ${HOST_PORT}"
                     fi
