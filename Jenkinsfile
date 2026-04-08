@@ -100,12 +100,11 @@ pipeline{
                     if [ "$CONTAINER_ID" -ne 0];then
                         docker stop $CONTAINER_ID
                     fi
-                    docker run -d --name $LOCAL_IMAGE_NAME-V$BUILD_NUMBER -p $HOST_PORT:$DOCKER_PORT $LOCAL_IMAGE_NAME:V$BUILD_NUMBER 
+                    docker run -d --name $LOCAL_IMAGE_NAME-V$BUILD_NUMBER --restart unless-stopped -p $HOST_PORT:$DOCKER_PORT $LOCAL_IMAGE_NAME:V$BUILD_NUMBER 
                     '''
                 }
             }
-
-            
+           
     }
 
     
