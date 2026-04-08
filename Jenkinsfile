@@ -134,7 +134,7 @@ stage('Deploy and Run Python Web Application') {
                         ${IMAGE_NAME_REPO}
 
                     echo "Deployment completed successfully."
-                    EOF
+                EOF
                 '''
             }
         }
