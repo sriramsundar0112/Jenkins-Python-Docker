@@ -110,7 +110,7 @@ stage('Deploy and Run Python Web Application') {
                     ssh -o StrictHostKeyChecking=no \
                         -o UserKnownHostsFile=/dev/null \
                         -i "$SSH_KEY" \
-                        $SSH_USER@$CLIENT_PRIVATEIP << 'EOF'
+                        $SSH_USER@$CLIENT_PRIVATEIP << EOF
 
                     IMAGE="${IMAGE_NAME_REPO}"
                     echo "Pulling image: $IMAGE_NAME_REPO"
