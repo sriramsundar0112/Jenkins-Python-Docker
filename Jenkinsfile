@@ -7,6 +7,7 @@ pipeline{
        DOCKER_HUB_REPO='jenkins-docker-python-webapp'
        DOCKER_PORT=8000
        HOST_PORT=8082
+       CLIENT_PRIVATEIP='172.31.65.173'
      
     }
 
@@ -79,9 +80,10 @@ pipeline{
                             passwordVariable: 'DCKR_PASS'                // Name of the environment variable for the password
                         )
                     ]) {
+                      env.IMAGE_NAME_REPO="$DCKR_USER/$DOCKER_HUB_REPO:V$BUILD_NUMBER"
                       sh '''
-                docker tag $LOCAL_IMAGE_NAME:V$BUILD_NUMBER $DCKR_USER/$DOCKER_HUB_REPO:V$BUILD_NUMBER
-                docker push $DCKR_USER/$DOCKER_HUB_REPO:V$BUILD_NUMBER
+                docker tag $LOCAL_IMAGE_NAME:V$BUILD_NUMBER $IMAGE_NAME_REPO
+                docker push $IMAGE_NAME_REPO
                 '''
                     }
                 }
@@ -90,20 +92,52 @@ pipeline{
             }
             }
 
-            stage('Deploy and Run Python Web Application')
-            {
-                steps
-                {
-                    sh '''
-                    CONTAINER_ID=0
-                    CONTAINER_ID= $(docker ps -q --filter "publish=$HOST_PORT")
-                    if [ "$CONTAINER_ID" -ne 0];then
-                        docker stop $CONTAINER_ID
+stage('Deploy and Run Python Web Application') {
+    steps {
+        script {
+            withCredentials([
+                sshUserPrivateKey(
+                    credentialsId: 'Amazon-EC2-Client',
+                    keyFileVariable: 'SSH_KEY',
+                    usernameVariable: 'SSH_USER'
+                )
+            ]) {
+                sh '''
+                    set -e
+
+                    echo "Connecting through SSH with IP: $CLIENT_PRIVATEIP ..."
+
+                    ssh -o StrictHostKeyChecking=no \
+                        -o UserKnownHostsFile=/dev/null \
+                        -i "$SSH_KEY" \
+                        $SSH_USER@$CLIENT_PRIVATEIP << 'EOF'
+
+                    IMAGE="${IMAGE_NAME_REPO}"
+                    echo "Pulling image: $IMAGE"
+                    docker pull "$IMAGE"
+
+                    CONTAINER_ID=$(docker ps -q --filter "publish=${HOST_PORT}")
+
+                    if [ -n "$CONTAINER_ID" ]; then
+                        echo "Stopping container running on port ${HOST_PORT}: $CONTAINER_ID"
+                        docker stop "$CONTAINER_ID"
+                    else
+                        echo "No existing container found on port ${HOST_PORT}"
                     fi
-                    docker run -d --name $LOCAL_IMAGE_NAME-V$BUILD_NUMBER -p $HOST_PORT:$DOCKER_PORT $LOCAL_IMAGE_NAME:V$BUILD_NUMBER 
-                    '''
-                }
+
+                    echo "Starting new container..."
+                    docker run -d \
+                        --name ${LOCAL_IMAGE_NAME}-V${BUILD_NUMBER} \
+                        -p ${HOST_PORT}:${DOCKER_PORT} \
+                        "$IMAGE"
+
+                    echo "Deployment completed successfully."
+                    EOF
+                '''
             }
+        }
+    }
+}
 
             
     }
