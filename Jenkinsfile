@@ -119,7 +119,7 @@ stage('Deploy and Run Python Web Application') {
 					echo "Pulling image: ${IMAGE_NAME_REPO}"
                     sudo docker pull ${IMAGE_NAME_REPO}
                     sudo docker ps -q --filter "publish=${HOST_PORT}"
-                    CONTAINER_ID=$(sudo docker ps -q --filter "publish=${HOST_PORT}")
+                    CONTAINER_ID=\$(sudo docker ps -q --filter "publish=${HOST_PORT}")
                     echo $CONTAINER_ID
                     if [ -n "$CONTAINER_ID" ]; then
                         echo "Stopping container running on port ${HOST_PORT}: $CONTAINER_ID"
@@ -135,7 +135,7 @@ stage('Deploy and Run Python Web Application') {
                         ${IMAGE_NAME_REPO}
 
                     echo "Deployment completed successfully."
-            EOF
+                EOF
                 '''
             }
         }
