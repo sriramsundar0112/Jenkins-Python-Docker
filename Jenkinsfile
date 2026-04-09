@@ -113,9 +113,7 @@ stage('Deploy and Run Python Web Application') {
                     ssh -o StrictHostKeyChecking=no \
                         -o UserKnownHostsFile=/dev/null \
                         -i "$SSH_KEY" \
-                        $SSH_USER@$CLIENT_PRIVATEIP \ 
-                        "bash -s $IMAGE_NAME_REPO $HOST_PORT $LOCAL_IMAGE_NAME $BUILD_NUMBER $DOCKER_PORT" \
-                        < Scripts/deploy.sh
+                        $SSH_USER@$CLIENT_PRIVATEIP "bash -s $IMAGE_NAME_REPO $HOST_PORT $LOCAL_IMAGE_NAME $BUILD_NUMBER $DOCKER_PORT" < Scripts/deploy.sh
                 '''
             }
         }
