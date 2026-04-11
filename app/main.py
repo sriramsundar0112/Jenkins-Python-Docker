@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from app.middleware.logging import request_logger
 
 app = FastAPI()
+app.middleware("http")(request_logger)
 
 @app.get("/")
 def read_root():
