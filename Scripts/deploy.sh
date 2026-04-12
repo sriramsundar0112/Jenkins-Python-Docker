@@ -28,5 +28,6 @@ echo "Starting new container..."
 sudo docker run -d \
 --name ${LOCAL_IMAGE_NAME}-V${BUILD_NUMBER} \
 -p ${HOST_PORT}:${DOCKER_PORT} \
+-v jenkins-python-app-vol:/app/logs \
 ${IMAGE_NAME_REPO}
 echo "Deployment completed successfully."
