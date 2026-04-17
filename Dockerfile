@@ -1,4 +1,4 @@
-# Stage :1 Build all the necessary dependencies..
+# Stage :1 Build all the necessary dependencies...
 
 FROM python:3.12-slim AS builder
 WORKDIR /dependencies
