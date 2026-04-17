@@ -29,9 +29,10 @@ pipeline{
                 sh """
                      /opt/sonar-scanner-8.0.1.6346-linux-x64/bin/sonar-scanner \
                      -Dsonar.projectBaseDir=. \
-                     -Dsonar.sources=. \
-                     -Dsonar.projectKey=sonarqube-Jenkins:$BUILD_NUMBER-$BUILD_ID \
-                     -Dsonar.projectName=sonarqube-jenkins:$BUILD_NUMBER-$BUILD_ID \
+                     -Dsonar.sources=app \
+                     -Dsonar.projectKey=sonarqube-Jenkins \
+                     -Dsonar.projectName=sonarqube-jenkins \
+					 -Dsonar.exclusions=**/__pycache__/**,**/.git/**,**/*.md
 
                     """
               }
