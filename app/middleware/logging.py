@@ -2,6 +2,7 @@ import json
 import time
 from fastapi import Request
 from app.core.logger import get_logger
+from datetime import datetime, timezone
 
 logger = get_logger()
 
@@ -11,6 +12,7 @@ async def request_logger(request: Request, call_next):
     response = await call_next(request)
 
     log_data = {
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "method": request.method,
         "path": request.url.path,
         "status_code": response.status_code,
